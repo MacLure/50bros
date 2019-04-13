@@ -67,11 +67,14 @@ function love.load()
   --   end
   -- end
 
-  tiles = generateLevel()
+  -- tiles = generateLevel()
 
 
   gStateMachine = StateMachine {
+    ['start'] = function() return StartState() end,
+    ['play'] = function() return PlayState() end,
   }
+  gStateMachine:change('start')
 
   love.keyboard.keysPressed = {}
 end
