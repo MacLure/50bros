@@ -60,7 +60,7 @@ function love.load()
   characterDY = 0
   direction = 'right'
 
-  mapWidth = 20
+  mapWidth = 50
   mapHeight = 20
 
   backgroundR = math.random(255)
@@ -69,15 +69,18 @@ function love.load()
 
   cameraScroll = 0
 
-  for y = 1, mapHeight do
-    table.insert(tiles, {})
+  -- for y = 1, mapHeight do
+  --   table.insert(tiles, {})
 
-    for x = 1, mapWidth do
-      table.insert(tiles[y], {
-        id = y < 7 and SKY or GROUND
-      })
-    end
-  end
+  --   for x = 1, mapWidth do
+  --     table.insert(tiles[y], {
+  --       id = y < 7 and SKY or GROUND
+  --     })
+  --   end
+  -- end
+
+  tiles = generateLevel()
+
 
   gStateMachine = StateMachine {
   }
@@ -143,7 +146,7 @@ function love.update(dt)
   else
     currentAnimation = jumpAnimation
   end
--- cameraScroll = characterX - (VIRTUAL_WIDTH / 2) + (CHARACTER_WIDTH / 2)
+cameraScroll = characterX - (VIRTUAL_WIDTH / 2) + (CHARACTER_WIDTH / 2)
 
 end
 
@@ -152,7 +155,7 @@ function love.draw()
 
   love.graphics.clear(backgroundR, backgroundG, backgroundB, 255)
 
-  love.graphics.translate(math.floor(cameraScroll), 0)
+  love.graphics.translate(math.floor(-cameraScroll), 0)
 
   for y = 1, mapHeight do
     for x = 1, mapWidth do
@@ -168,4 +171,39 @@ function love.draw()
 
   gStateMachine:render()
   push:finish()
+end
+
+function generateLevel()
+  local tiles = {}
+
+  -- create 2D array completely empty first so we can just change tiles as needed
+  for y = 1, mapHeight do
+      table.insert(tiles, {})
+
+      for x = 1, mapWidth do
+          table.insert(tiles[y], {
+              id = SKY,
+          })
+      end
+  end
+
+  for x = 1, mapWidth do
+      local spawnPillar = math.random(5) == 1
+      
+      if spawnPillar then
+          for pillar = 4, 6 do
+              tiles[pillar][x] = {
+                  id = GROUND,
+              }
+          end
+      end
+
+      for ground = 7, mapHeight do
+          tiles[ground][x] = {
+              id = GROUND,
+          }
+      end
+  end
+
+  return tiles
 end
