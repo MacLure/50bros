@@ -195,7 +195,7 @@ function generateLevel()
     local spawnPillar = math.random(5) == 1
     
     if spawnPillar then
-      for pillar = 4, 6 do
+      for pillar = math.random(4,6), 6 do
         tiles[pillar][x] = {
           id = GROUND,
         }
