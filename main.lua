@@ -6,7 +6,9 @@ VIRTUAL_HEIGHT = 144
 
 TILE_SIZE = 16
 
-SKY = 2
+CAMERA_SCROLL_SPEED = 40
+
+SKY = 37
 GROUND = 1
 
 require 'src/Dependencies'
@@ -32,6 +34,8 @@ function love.load()
   backgroundR = math.random(255)
   backgroundG = math.random(255)
   backgroundB = math.random(255)
+
+  cameraScroll = 0
 
   for y = 1, mapHeight do
     table.insert(tiles, {})
@@ -65,18 +69,33 @@ function love.keyboard.wasPressed(key)
   end
 end
 
+function love.keypressed(key)
+  if key == 'escape' then
+      love.event.quit()
+  end
+end
+
 
 function love.update(dt)
 
   gStateMachine:update(dt)
 
   love.keyboard.keysPressed = {}
+
+  if love.keyboard.isDown('left') then
+    cameraScroll = cameraScroll - CAMERA_SCROLL_SPEED * dt
+  elseif love.keyboard.isDown('right') then
+    cameraScroll = cameraScroll + CAMERA_SCROLL_SPEED * dt
+  end
+
 end
 
 function love.draw()
   push:start()
 
   love.graphics.clear(backgroundR, backgroundG, backgroundB, 255)
+
+  love.graphics.translate(math.floor(cameraScroll), 0)
 
   for y = 1, mapHeight do
     for x = 1, mapWidth do
