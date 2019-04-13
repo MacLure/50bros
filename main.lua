@@ -6,6 +6,9 @@ VIRTUAL_HEIGHT = 144
 
 TILE_SIZE = 16
 
+CHARACTER_WIDTH = 16
+CHARACTER_HEIGHT = 32
+
 CAMERA_SCROLL_SPEED = 40
 
 SKY = 37
@@ -25,8 +28,14 @@ function love.load()
 
   tiles = {}
 
-  tileset = love.graphics.newImage('graphics/mainTileset.png')
-  quads = GenerateQuads(tileset, TILE_SIZE, TILE_SIZE)
+  tileSheet = love.graphics.newImage('graphics/mainTileset.png')
+  quads = GenerateQuads(tileSheet, TILE_SIZE, TILE_SIZE)
+
+  characterSheet = love.graphics.newImage('graphics/mario.png')
+  characterQuads = GenerateQuads(characterSheet, CHARACTER_WIDTH, CHARACTER_HEIGHT)
+
+  characterX = VIRTUAL_WIDTH / 2 - (CHARACTER_WIDTH / 2)
+  characterY = ((7 - 1) * TILE_SIZE) - (CHARACTER_HEIGHT * 2)
 
   mapWidth = 20
   mapHeight = 20
@@ -100,10 +109,11 @@ function love.draw()
   for y = 1, mapHeight do
     for x = 1, mapWidth do
       local tile = tiles[y][x]
-      love.graphics.draw(tileset, quads[tile.id], (x - 1) * TILE_SIZE, (y - 1) * TILE_SIZE)
+      love.graphics.draw(tileSheet, quads[tile.id], (x - 1) * TILE_SIZE, (y - 1) * TILE_SIZE)
     end
   end
 
+  love.graphics.draw(characterSheet, characterQuads[1], characterX, characterY)
 
   gStateMachine:render()
 
