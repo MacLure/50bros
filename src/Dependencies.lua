@@ -7,6 +7,7 @@ require 'src/BaseState'
 require 'src/game/StartState'
 require 'src/game/PlayState'
 
+require 'src/constants'
 require 'src/Util'
 require 'src/Animation'
 require 'src/TileMap'
