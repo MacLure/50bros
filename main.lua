@@ -18,6 +18,7 @@ CAMERA_SCROLL_SPEED = 40
 
 SKY = 37
 GROUND = 1
+CHOC = 16
 
 require 'src/Dependencies'
 
@@ -197,7 +198,7 @@ function generateLevel()
     if spawnPillar then
       for pillar = math.random(4,6), 6 do
         tiles[pillar][x] = {
-          id = GROUND,
+          id = CHOC,
         }
       end
     end
