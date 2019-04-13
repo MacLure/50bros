@@ -188,21 +188,28 @@ function generateLevel()
   end
 
   for x = 1, mapWidth do
-      local spawnPillar = math.random(5) == 1
-      
-      if spawnPillar then
-          for pillar = 4, 6 do
-              tiles[pillar][x] = {
-                  id = GROUND,
-              }
-          end
-      end
+    if math.random(7) == 1 then
+      goto continue
+    end
 
-      for ground = 7, mapHeight do
-          tiles[ground][x] = {
-              id = GROUND,
-          }
+    local spawnPillar = math.random(5) == 1
+    
+    if spawnPillar then
+      for pillar = 4, 6 do
+        tiles[pillar][x] = {
+          id = GROUND,
+        }
       end
+    end
+
+    for ground = 7, mapHeight do
+      tiles[ground][x] = {
+        id = GROUND,
+      }
+    end
+
+    ::continue::
+
   end
 
   return tiles
