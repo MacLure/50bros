@@ -9,6 +9,7 @@ TILE_SIZE = 16
 CHARACTER_WIDTH = 16
 CHARACTER_HEIGHT = 32
 
+CHARACTER_MOVE_SPEED = 40
 CAMERA_SCROLL_SPEED = 40
 
 SKY = 37
@@ -92,9 +93,9 @@ function love.update(dt)
   love.keyboard.keysPressed = {}
 
   if love.keyboard.isDown('left') then
-    cameraScroll = cameraScroll - CAMERA_SCROLL_SPEED * dt
+    characterX = characterX - CHARACTER_MOVE_SPEED * dt
   elseif love.keyboard.isDown('right') then
-    cameraScroll = cameraScroll + CAMERA_SCROLL_SPEED * dt
+    characterX = characterX + CHARACTER_MOVE_SPEED * dt
   end
 
 end
