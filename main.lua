@@ -1,8 +1,13 @@
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
-VIRTUAL_WIDTH = 512
-VIRTUAL_HEIGHT = 288
+VIRTUAL_WIDTH = 256
+VIRTUAL_HEIGHT = 144
+
+TILE_SIZE = 16
+
+SKY = 2
+GROUND = 1
 
 require 'src/Dependencies'
 
@@ -16,19 +21,30 @@ function love.load()
     resizable = true
   })
 
-  gSounds['music']:setLooping(true)
-  gSounds['music']:play()
+  tiles = {}
+
+  tileset = love.graphics.newImage('graphics/mainTileset.png')
+  quads = GenerateQuads(tileset, TILE_SIZE, TILE_SIZE)
+
+  mapWidth = 20
+  mapHeight = 20
+
+  backgroundR = math.random(255)
+  backgroundG = math.random(255)
+  backgroundB = math.random(255)
+
+  for y = 1, mapHeight do
+    table.insert(tiles, {})
+
+    for x = 1, mapWidth do
+      table.insert(tiles[y], {
+        id = y < 5 and SKY or GROUND
+      })
+    end
+  end
 
   gStateMachine = StateMachine {
-    ['start'] = function() return StartState() end,
-    ['begin-game'] = function() return BeginGameState() end,
-    ['play'] = function() return PlayState() end,
-    ['game-over'] = function() return GameOverState() end
   }
-  gStateMachine:change('start')
-
-  backgroundX = 0
-  backgroundScrollSpeed = 80
 
   love.keyboard.keysPressed = {}
 end
@@ -51,11 +67,6 @@ end
 
 
 function love.update(dt)
-  backgroundX = backgroundX - backgroundScrollSpeed * dt
-  
-  if backgroundX <= -1024 + VIRTUAL_WIDTH - 4 + 51 then
-      backgroundX = 0
-  end
 
   gStateMachine:update(dt)
 
@@ -65,7 +76,15 @@ end
 function love.draw()
   push:start()
 
-  love.graphics.draw(gTextures['background'], backgroundX, 0)
+  love.graphics.clear(backgroundR, backgroundG, backgroundB, 255)
+
+  for y = 1, mapHeight do
+    for x = 1, mapWidth do
+      local tile = tiles[y][x]
+      love.graphics.draw(tileset, quads[tile.id], (x - 1) * TILE_SIZE, (y - 1) * TILE_SIZE)
+    end
+  end
+
 
   gStateMachine:render()
 
