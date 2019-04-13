@@ -9,7 +9,7 @@ TILE_SIZE = 16
 CHARACTER_WIDTH = 16
 CHARACTER_HEIGHT = 32
 
-CHARACTER_MOVE_SPEED = 40
+CHARACTER_MOVE_SPEED = 60
 CAMERA_SCROLL_SPEED = 40
 
 SKY = 37
@@ -35,8 +35,21 @@ function love.load()
   characterSheet = love.graphics.newImage('graphics/mario.png')
   characterQuads = GenerateQuads(characterSheet, CHARACTER_WIDTH, CHARACTER_HEIGHT)
 
+  idleAnimation = Animation {
+    frames = {1},
+    interval = 1
+  }
+  movingAnimation = Animation {
+    frames = {2, 3, 4},
+    interval = 0.1
+  }
+
+  currentAnimation = idleAnimation
+
   characterX = VIRTUAL_WIDTH / 2 - (CHARACTER_WIDTH / 2)
   characterY = ((7 - 1) * TILE_SIZE) - (CHARACTER_HEIGHT * 2)
+  direction = 'right'
+
 
   mapWidth = 20
   mapHeight = 20
@@ -87,16 +100,23 @@ end
 
 
 function love.update(dt)
-
   gStateMachine:update(dt)
-
   love.keyboard.keysPressed = {}
+
+  currentAnimation:update(dt)
 
   if love.keyboard.isDown('left') then
     characterX = characterX - CHARACTER_MOVE_SPEED * dt
+    currentAnimation = movingAnimation
+    direction = 'left'
   elseif love.keyboard.isDown('right') then
-    characterX = characterX + CHARACTER_MOVE_SPEED * dt
+      characterX = characterX + CHARACTER_MOVE_SPEED * dt
+      currentAnimation = movingAnimation
+      direction = 'right'
+  else
+      currentAnimation = idleAnimation
   end
+-- cameraScroll = characterX - (VIRTUAL_WIDTH / 2) + (CHARACTER_WIDTH / 2)
 
 end
 
@@ -114,9 +134,11 @@ function love.draw()
     end
   end
 
-  love.graphics.draw(characterSheet, characterQuads[1], characterX, characterY)
+  love.graphics.draw(characterSheet, characterQuads[currentAnimation:getCurrentFrame()], 
+    math.floor(characterX) + CHARACTER_WIDTH / 2, math.floor(characterY) + CHARACTER_HEIGHT / 2, 
+    0, direction == 'left' and -1 or 1, 1,
+    CHARACTER_WIDTH / 2, CHARACTER_HEIGHT / 2)
 
   gStateMachine:render()
-
   push:finish()
 end

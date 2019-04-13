@@ -4,6 +4,7 @@ Timer = require 'lib/knife.timer'
 
 require 'src/StateMachine'
 require 'src/Util'
+require 'src/Animation'
 
 
 gSounds = {}
