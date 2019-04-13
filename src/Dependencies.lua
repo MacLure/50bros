@@ -6,6 +6,9 @@ require 'src/StateMachine'
 require 'src/Util'
 require 'src/Animation'
 
+require 'src/Entity'
+require 'src/Player'
+
 
 gSounds = {}
 

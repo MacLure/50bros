@@ -123,8 +123,8 @@ function love.update(dt)
   characterDY = characterDY + GRAVITY
   characterY = characterY + characterDY * dt
 
-  if characterY > ((7 - 1) * TILE_SIZE) - CHARACTER_HEIGHT then
-    characterY = ((7 - 1) * TILE_SIZE) - CHARACTER_HEIGHT
+  if characterY > ((8 - 1) * TILE_SIZE) - CHARACTER_HEIGHT then
+    characterY = ((8 - 1) * TILE_SIZE) - CHARACTER_HEIGHT
     characterDY = 0
   end
 
@@ -196,14 +196,14 @@ function generateLevel()
     local spawnPillar = math.random(5) == 1
     
     if spawnPillar then
-      for pillar = math.random(4,6), 6 do
+      for pillar = math.random(5,7), 7 do
         tiles[pillar][x] = {
           id = CHOC,
         }
       end
     end
 
-    for ground = 7, mapHeight do
+    for ground = 8, mapHeight do
       tiles[ground][x] = {
         id = GROUND,
       }
