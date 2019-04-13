@@ -10,6 +10,10 @@ CHARACTER_WIDTH = 16
 CHARACTER_HEIGHT = 32
 
 CHARACTER_MOVE_SPEED = 60
+JUMP_VELOCITY = -200
+
+GRAVITY = 7
+
 CAMERA_SCROLL_SPEED = 40
 
 SKY = 37
@@ -43,13 +47,18 @@ function love.load()
     frames = {2, 3, 4},
     interval = 0.1
   }
+  jumpAnimation = Animation {
+    frames = {6},
+    interval = 1
+  }
 
   currentAnimation = idleAnimation
 
   characterX = VIRTUAL_WIDTH / 2 - (CHARACTER_WIDTH / 2)
   characterY = ((7 - 1) * TILE_SIZE) - (CHARACTER_HEIGHT * 2)
-  direction = 'right'
 
+  characterDY = 0
+  direction = 'right'
 
   mapWidth = 20
   mapHeight = 20
@@ -65,7 +74,7 @@ function love.load()
 
     for x = 1, mapWidth do
       table.insert(tiles[y], {
-        id = y < 5 and SKY or GROUND
+        id = y < 7 and SKY or GROUND
       })
     end
   end
@@ -96,6 +105,10 @@ function love.keypressed(key)
   if key == 'escape' then
       love.event.quit()
   end
+  if key == 'space' and characterDY == 0 then
+    characterDY = JUMP_VELOCITY
+    currentAnimation = jumpAnimation
+  end
 end
 
 
@@ -103,18 +116,32 @@ function love.update(dt)
   gStateMachine:update(dt)
   love.keyboard.keysPressed = {}
 
+  characterDY = characterDY + GRAVITY
+  characterY = characterY + characterDY * dt
+
+  if characterY > ((7 - 1) * TILE_SIZE) - CHARACTER_HEIGHT then
+    characterY = ((7 - 1) * TILE_SIZE) - CHARACTER_HEIGHT
+    characterDY = 0
+  end
+
   currentAnimation:update(dt)
 
   if love.keyboard.isDown('left') then
     characterX = characterX - CHARACTER_MOVE_SPEED * dt
-    currentAnimation = movingAnimation
+    if characterDY == 0 then
+        currentAnimation = movingAnimation
+    end
     direction = 'left'
   elseif love.keyboard.isDown('right') then
-      characterX = characterX + CHARACTER_MOVE_SPEED * dt
+    characterX = characterX + CHARACTER_MOVE_SPEED * dt
+    if characterDY == 0 then
       currentAnimation = movingAnimation
-      direction = 'right'
+    end
+    direction = 'right'
+  elseif characterDY == 0 then
+    currentAnimation = idleAnimation
   else
-      currentAnimation = idleAnimation
+    currentAnimation = jumpAnimation
   end
 -- cameraScroll = characterX - (VIRTUAL_WIDTH / 2) + (CHARACTER_WIDTH / 2)
 
